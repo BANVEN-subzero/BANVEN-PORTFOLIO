@@ -1,33 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { profile } from "@/config/profile";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono-space",
-  subsets: ["latin"],
-  display: "swap",
-});
+/*
+ * Typography — Helvetica-family system stack (Atelier style).
+ * Deliberately NO webfont/Google-font fetch: builds must succeed on any
+ * host (Vercel, Docker, CI) with zero network dependency, and the design
+ * calls for the AU Grotesk / Helvetica class of grotesques.
+ */
 
 const SITE_TITLE = `${profile.fullName} — Software Engineer & AI Innovator`;
 const SITE_DESCRIPTION =
   "Portfolio of Nyuydze Banven Eric Junior — a Cameroonian software engineer exploring full-stack development, artificial intelligence, data analytics and technology entrepreneurship. Building ideas into technology that matters.";
 
+/* Canonical site URL — tolerant of an unset OR empty-string env var. */
+const SITE_URL =
+  (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim() || "https://banven-portfolio.vercel.app";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://banven-subzero.github.io"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_TITLE,
     template: `%s — ${profile.displayName}`,
@@ -105,9 +97,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased bg-midnight text-mist`}
-      >
+      <body className="antialiased bg-midnight text-mist">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

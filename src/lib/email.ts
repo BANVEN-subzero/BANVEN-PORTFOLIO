@@ -4,9 +4,11 @@
  * NOTE: this module must only be imported from server code (API routes / server components).
  */
 
+import { profile } from "@/config/profile";
+
 export type ContactConfig = {
-  /** Destination inbox for portfolio messages (PORTFOLIO_EMAIL). */
-  email: string | null;
+  /** Destination inbox for portfolio messages (PORTFOLIO_EMAIL, falling back to profile.contact.email). */
+  email: string;
   /** Verified "from" address (CONTACT_FROM_EMAIL) — falls back to Resend's testing sender. */
   fromEmail: string;
   /** Whether a Resend API key is present. */
@@ -14,7 +16,9 @@ export type ContactConfig = {
 };
 
 export function getContactConfig(): ContactConfig {
-  const email = (process.env.PORTFOLIO_EMAIL ?? "").trim() || null;
+  // PORTFOLIO_EMAIL overrides; the public address from profile.ts is the
+  // built-in default so deploys NEVER render a blank/`mailto:null` email.
+  const email = (process.env.PORTFOLIO_EMAIL ?? "").trim() || profile.contact.email;
   const fromEmail =
     (process.env.CONTACT_FROM_EMAIL ?? "").trim() || "Portfolio Contact <onboarding@resend.dev>";
   const deliveryReady = Boolean((process.env.RESEND_API_KEY ?? "").trim());

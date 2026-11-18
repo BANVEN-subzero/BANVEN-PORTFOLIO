@@ -492,7 +492,8 @@ export const contact = {
   title: "Have an idea worth building?",
   description:
     "I'm always interested in meaningful collaborations, software development opportunities, research initiatives, open-source contributions and conversations about technology.",
-  /** The destination address itself comes from PORTFOLIO_EMAIL (server-side). */
+  /** Public contact address — PORTFOLIO_EMAIL (env) overrides this at build/runtime. */
+  email: "banven100@gmail.com",
 };
 
 export const navLinks = [

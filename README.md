@@ -12,7 +12,7 @@ Everything personal lives in **`src/config/profile.ts`**:
 - Experience, research interests, milestones, ambitions
 - GitHub username & links
 
-The contact email is **not** in that file — it comes from the environment (below), so you can change it without touching code.
+The contact email lives in **`src/config/profile.ts` → `contact.email`** and can be overridden without touching code by setting `PORTFOLIO_EMAIL` in the environment. If neither is set the site still renders the built-in address — it never shows a blank email or a broken `mailto:` link.
 
 ## Email — make the contact form actually send
 
@@ -67,11 +67,41 @@ unreachable, the section shows a graceful fallback linking to your profile.
 ## Run
 
 ```bash
-bun install
-bun run dev     # development (port 3000)
-bun run build   # production build
-bun run start   # production server
+bun install       # or: npm install
+bun run dev       # development (port 3000)
+bun run build     # production build (what Vercel/CI runs)
+bun run start     # self-hosted production server (requires bun)
 ```
+
+`bun run build:standalone` additionally copies static assets into
+`.next/standalone/` for the self-hosted `start` script (not needed on Vercel).
+
+## Deploying
+
+Deploy on any Node host that runs Next.js — **Vercel is the recommended path**
+(the contact API routes need a Node server; GitHub Pages cannot run them).
+
+**Vercel (2 minutes):**
+
+1. Push the repo to GitHub (already done: `BANVEN-subzero/BANVEN-PORTFOLIO`).
+2. Go to [vercel.com/new](https://vercel.com/new) → import `BANVEN-PORTFOLIO`.
+   Framework preset **Next.js** is detected automatically; leave Build /
+   Output settings untouched (`npm run build` works with npm, bun or yarn).
+3. Environment Variables (Project → Settings → Environment Variables):
+
+   | Variable           | Required | Value                                  |
+   | ------------------ | -------- | -------------------------------------- |
+   | `PORTFOLIO_EMAIL`  | no       | `banven100@gmail.com`                  |
+   | `RESEND_API_KEY`   | no       | from resend.com (enables real sending) |
+   | `CONTACT_FROM_EMAIL` | no     | empty for testing                      |
+   | `NEXT_PUBLIC_SITE_URL` | no   | your final URL (e.g. `https://<project>.vercel.app`) |
+
+4. Click **Deploy**. Every later `git push` to `main` redeploys automatically.
+
+> Why not GitHub Pages? The portfolio has server endpoints (`/api/contact`,
+> `/api/github`) and uses the Next.js server runtime — static hosts like
+> GitHub Pages can only serve exported static files, so the contact form
+> would break. Use Vercel, Railway, Render or a small VPS instead.
 
 ## Where things live
 
